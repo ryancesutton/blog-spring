@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8" />
-    <title>Home</title>
+<head th:replace="fragments/head :: head('Blog | All Posts')">
+    <meta charset="UTF-8">
+    <title>All Posts</title>
 </head>
 <body>
+<nav th:replace="fragments/navbar :: navbar" />
 
 <h1>This is the home page</h1>
 
+<footer th:replace="fragments/footer :: footer" />
 </body>
 </html>
