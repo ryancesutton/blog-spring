@@ -1,17 +1,30 @@
 package com.codeup.blog.controllers;
 
 
+import com.codeup.blog.daos.PostsRepository;
+import com.codeup.blog.models.Post;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 public class PostController {
 
-    @RequestMapping(path = "/posts", method = RequestMethod.GET)
-    @ResponseBody
-    public String show() {
-        return "Viewing all posts!";
+    private final PostsRepository postsDao;
+
+    public PostController(PostsRepository postsDao) {
+        this.postsDao = postsDao;
+    }
+
+    @GetMapping("/posts")
+    public String index(Model model) {
+        List<Post> postList = new ArrayList<>();
+        model.addAttribute("noPostsFound", postList.size() == 0);
+        model.addAttribute("posts", postList);
+        return "/posts/index";
     }
 
     @GetMapping("/posts/{id}")
@@ -26,9 +39,12 @@ public class PostController {
         return "Here is my form!";
     }
 
-    @RequestMapping(path = "/posts/create", method = RequestMethod.POST)
+    @PostMapping("/posts/create")
     @ResponseBody
-    public String createPost() {
+    public String savePost() {
+
+        Post newPost = new Post("Post Title", "Here is my post body!");
+        postsDao.save(newPost);
         return "Creating new post!";
     }
 
