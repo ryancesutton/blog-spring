@@ -15,7 +15,7 @@ public class HomeController {
 
     @GetMapping("/home")
     public String goHome() {
-        return "index";
+        return "posts/index";
     }
 
 }

@@ -2,10 +2,8 @@ package com.codeup.blog.controllers;
 
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class PostController {
@@ -16,10 +14,10 @@ public class PostController {
         return "Viewing all posts!";
     }
 
-    @RequestMapping(path = "/posts/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public String showOne(@PathVariable long id) {
-        return "Viewing post!" + id;
+    @GetMapping("/posts/{id}")
+    public String showOne(@PathVariable long id, Model model) {
+        model.addAttribute("postID", id);
+        return "posts/show";
     }
 
     @RequestMapping(path = "/posts/create", method = RequestMethod.GET)
