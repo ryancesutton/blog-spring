@@ -15,8 +15,8 @@ public class PostController {
 
     private final PostsRepository postsDao;
 
-    public PostController(PostsRepository postsDao) {
-        this.postsDao = postsDao;
+    public PostController(PostsRepository postsRepository) {
+        postsDao = postsRepository;
     }
 
     @GetMapping("/posts")
@@ -48,5 +48,35 @@ public class PostController {
         return "Creating new post!";
     }
 
+    @GetMapping("/posts/{id}/edit")
+    public String showEditForm(Model model, @PathVariable long id) {
+        Post postToEdit = postsDao.getOne(id);
+        model.addAttribute("post", postToEdit);
+        return "posts/edit";
+    }
+
+    @PostMapping("/posts/{id}/edit")
+    @ResponseBody
+    public String update(@PathVariable long id,
+                         @RequestParam(name = "title") String title,
+                         @RequestParam(name = "body") String body){
+        //find a post
+        Post foundPost = postsDao.getOne(id);
+
+        //edit the post
+        foundPost.setTitle(title);
+        foundPost.setBody(body);
+
+        //save the changes
+        postsDao.save(foundPost);
+        return "Post has been updated";
+    }
+
+    @DeleteMapping("posts/{id}/delete")
+    @ResponseBody
+    public String destroy(@PathVariable long id) {
+        postsDao.deleteById(id);
+        return "Post has been deleted";
+    }
 
 }
