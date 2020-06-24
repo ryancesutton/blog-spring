@@ -21,7 +21,7 @@ public class PostController {
 
     @GetMapping("/posts")
     public String index(Model model) {
-        List<Post> postList = new ArrayList<>();
+        List<Post> postList = postsDao.findAll();
         model.addAttribute("noPostsFound", postList.size() == 0);
         model.addAttribute("posts", postList);
         return "/posts/index";
@@ -33,17 +33,18 @@ public class PostController {
         return "posts/show";
     }
 
-    @RequestMapping(path = "/posts/create", method = RequestMethod.GET)
-    @ResponseBody
+    @GetMapping("/posts/create")
     public String viewCreateForm() {
-        return "Here is my form!";
+
+        return "posts/create";
     }
 
     @PostMapping("/posts/create")
     @ResponseBody
-    public String savePost() {
+    public String savePost(@RequestParam(name = "title") String title,
+                           @RequestParam(name = "body") String body) {
 
-        Post newPost = new Post("Post Title", "Here is my post body!");
+        Post newPost = new Post(title, body);
         postsDao.save(newPost);
         return "Creating new post!";
     }
