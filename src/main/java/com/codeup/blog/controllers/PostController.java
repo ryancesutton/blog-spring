@@ -72,11 +72,17 @@ public class PostController {
         return "Post has been updated";
     }
 
-    @DeleteMapping("posts/{id}/delete")
+    @PostMapping("posts/{id}/delete")
     @ResponseBody
     public String destroy(@PathVariable long id) {
         postsDao.deleteById(id);
         return "Post has been deleted";
     }
 
+    @GetMapping("/search")
+    public String searchResults(Model model, @RequestParam(name = "term") String term){
+        List<Post> posts = postsDao.searchByTitleAndBody(term);
+        model.addAttribute("posts", posts);
+        return "posts/index";
+    }
 }
