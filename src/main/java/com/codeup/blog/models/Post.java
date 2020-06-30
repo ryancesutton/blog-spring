@@ -16,6 +16,9 @@ public class Post {
     @Column(nullable = false)
     private String body;
 
+    @OneToOne
+    private User owner;
+
     // spring framework uses this empty constructor
     public Post(){}
 
