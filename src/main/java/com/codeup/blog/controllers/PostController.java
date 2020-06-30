@@ -29,24 +29,23 @@ public class PostController {
 
     @GetMapping("/posts/{id}")
     public String showOne(@PathVariable long id, Model model) {
+        Post post = postsDao.getOne(id);
         model.addAttribute("postID", id);
+        model.addAttribute("post", post);
         return "posts/show";
     }
 
     @GetMapping("/posts/create")
-    public String viewCreateForm() {
-
+    public String viewCreateForm(Model model) {
+        model.addAttribute("post", new Post());
         return "posts/create";
     }
 
     @PostMapping("/posts/create")
-    @ResponseBody
-    public String savePost(@RequestParam(name = "title") String title,
-                           @RequestParam(name = "body") String body) {
+    public String savePost(@ModelAttribute Post newPost) {
 
-        Post newPost = new Post(title, body);
-        postsDao.save(newPost);
-        return "Creating new post!";
+        Post savedPost = postsDao.save(newPost);
+        return "redirect:/posts/" + savedPost.getId();
     }
 
     @GetMapping("/posts/{id}/edit")
@@ -57,20 +56,10 @@ public class PostController {
     }
 
     @PostMapping("/posts/{id}/edit")
-    @ResponseBody
-    public String update(@PathVariable long id,
-                         @RequestParam(name = "title") String title,
-                         @RequestParam(name = "body") String body){
-        //find a post
-        Post foundPost = postsDao.getOne(id);
+    public String update(@ModelAttribute Post postToEdit){
 
-        //edit the post
-        foundPost.setTitle(title);
-        foundPost.setBody(body);
-
-        //save the changes
-        postsDao.save(foundPost);
-        return "Post has been updated";
+        postsDao.save(postToEdit);
+        return "redirect:/posts/" + postToEdit.getId();
     }
 
     @PostMapping("posts/{id}/delete")
