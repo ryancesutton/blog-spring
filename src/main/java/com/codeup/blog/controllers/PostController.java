@@ -2,21 +2,24 @@ package com.codeup.blog.controllers;
 
 
 import com.codeup.blog.daos.PostsRepository;
+import com.codeup.blog.daos.UsersRepository;
 import com.codeup.blog.models.Post;
+import com.codeup.blog.models.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class PostController {
 
-    private final PostsRepository postsDao;
+    private PostsRepository postsDao;
+    private UsersRepository usersDao;
 
-    public PostController(PostsRepository postsRepository) {
+    public PostController(PostsRepository postsRepository, UsersRepository usersRepository) {
         postsDao = postsRepository;
+        usersDao = usersRepository;
     }
 
     @GetMapping("/posts")
@@ -43,7 +46,8 @@ public class PostController {
 
     @PostMapping("/posts/create")
     public String savePost(@ModelAttribute Post newPost) {
-
+        User currentUser = usersDao.getOne(1L);
+        newPost.setOwner(currentUser);
         Post savedPost = postsDao.save(newPost);
         return "redirect:/posts/" + savedPost.getId();
     }
@@ -57,7 +61,8 @@ public class PostController {
 
     @PostMapping("/posts/{id}/edit")
     public String update(@ModelAttribute Post postToEdit){
-
+        User currentUser = usersDao.getOne(1L);
+        postToEdit.setOwner(currentUser);
         postsDao.save(postToEdit);
         return "redirect:/posts/" + postToEdit.getId();
     }
