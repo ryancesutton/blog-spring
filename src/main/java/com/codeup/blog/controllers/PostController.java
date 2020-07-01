@@ -6,6 +6,7 @@ import com.codeup.blog.daos.UsersRepository;
 import com.codeup.blog.models.Post;
 import com.codeup.blog.models.User;
 import com.codeup.blog.services.EmailService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +50,7 @@ public class PostController {
 
     @PostMapping("/posts/create")
     public String savePost(@ModelAttribute Post newPost) {
-        User currentUser = usersDao.getOne(1L);
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         newPost.setOwner(currentUser);
         Post savedPost = postsDao.save(newPost);
         emailService.prepareAndSend(savedPost,"A new post has been created!", "A post has been created with the id of: " + savedPost.getId());
