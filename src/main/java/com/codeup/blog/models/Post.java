@@ -1,5 +1,7 @@
 package com.codeup.blog.models;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.persistence.*;
 
 @Entity
@@ -18,6 +20,7 @@ public class Post {
 
     @OneToOne
     private User owner;
+
 
     // spring framework uses this empty constructor
     public Post(){}
