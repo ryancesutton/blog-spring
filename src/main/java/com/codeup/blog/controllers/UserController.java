@@ -2,12 +2,17 @@ package com.codeup.blog.controllers;
 
 import com.codeup.blog.daos.UsersRepository;
 import com.codeup.blog.models.User;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -31,5 +36,37 @@ public class UserController {
         user.setPassword(hash);
         users.save(user);
         return "redirect:/login";
+    }
+
+    @GetMapping("/profile/{id}")
+    public String viewOtherUserProfile(@PathVariable long id, Model model){
+        User profileUser = users.getOne(id);
+        model.addAttribute("user", profileUser);
+        List<User> followingList = profileUser.getFollowingList();
+        model.addAttribute("followingList", followingList);
+        List<User> followerList = profileUser.getFollowerList();
+        model.addAttribute("followerList", followerList);
+        return "users/profile";
+    }
+
+    @PostMapping("users/follow/{id}") // put this action on the follow button
+    public String followUser(@PathVariable long id){
+        //get current user:
+        User principle = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = users.getOne(principle.getId());
+        User userToFollow = users.getOne(id);
+
+
+        List<User> following = currentUser.getFollowingList();
+
+        following.add(userToFollow);
+
+        currentUser.setFollowingList(following);
+
+        users.save(currentUser);
+
+        return "redirect:/posts";
+
+
     }
 }

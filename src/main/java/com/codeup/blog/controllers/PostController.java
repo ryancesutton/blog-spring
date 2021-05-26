@@ -40,6 +40,7 @@ public class PostController {
         Post post = postsDao.getOne(id);
         model.addAttribute("postID", id);
         model.addAttribute("post", post);
+        model.addAttribute("ownerID", post.getOwner().getId());
         return "posts/show";
     }
 

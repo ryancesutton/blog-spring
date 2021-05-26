@@ -16,6 +16,7 @@
         <h3 th:text="${post.title}">Title</h3>
         <div th:text="${post.body}">Body</div>
         <div>Created by: <span th:text="${post.owner.username}"></span></div>
+        <a th:href="'/profile/' + ${post.owner.id}" >See Profile</a>
 
     </div>
 </div>

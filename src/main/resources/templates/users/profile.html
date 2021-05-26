@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head('Blog | View Profile')">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<nav th:replace="fragments/navbar :: navbar" />
+
+<div class="container">
+    <div th:if="${user == null}">
+        User not found.
+    </div>
+    <div th:if="${user}">
+        <div th:text="${user.id}">ID</div>
+        <h3 th:text="${user.username}">Username</h3>
+        <div th:each="following : ${followingList}">
+            <p th:text="${following.username}"></p>
+        </div>
+        <hr>
+        <div th:each="follower : ${followerList}">
+            <p th:text="${follower.username}"></p>
+        </div>
+    </div>
+    <div>
+        <form th:action="'/users/follow/' + ${user.id}" th:method="post">
+            <button type="submit">Follow</button>
+        </form>
+    </div>
+</div>
+<!--<footer th:replace="fragments/footer :: footer" />-->
+</body>
+</html>

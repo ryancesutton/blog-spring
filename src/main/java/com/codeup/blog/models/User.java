@@ -1,6 +1,7 @@
 package com.codeup.blog.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -18,6 +19,17 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @ManyToMany
+    @JoinTable(
+            name = "followers",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "followed_id")}
+    )
+    private List<User> followingList;
+
+    @ManyToMany(mappedBy = "followingList")
+    private List<User> followerList;
 
     public User (){
 
@@ -41,6 +53,38 @@ public class User {
         this.email = email;
         this.username = username;
         this.password = password;
+    }
+
+    public User(long id, String email, String username, String password, List<User> followingList) {
+        this.id = id;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.followingList = followingList;
+    }
+
+    public User(String email, String username, String password, List<User> followingList) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.followingList = followingList;
+    }
+
+    public User(String email, String username, String password, List<User> followingList, List<User> followerList) {
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.followingList = followingList;
+        this.followerList = followerList;
+    }
+
+    public User(long id, String email, String username, String password, List<User> followingList, List<User> followerList) {
+        this.id = id;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.followingList = followingList;
+        this.followerList = followerList;
     }
 
     public long getId() {
@@ -73,5 +117,21 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<User> getFollowingList() {
+        return followingList;
+    }
+
+    public void setFollowingList(List<User> followingList) {
+        this.followingList = followingList;
+    }
+
+    public List<User> getFollowerList() {
+        return followerList;
+    }
+
+    public void setFollowerList(List<User> followerList) {
+        this.followerList = followerList;
     }
 }
