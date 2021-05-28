@@ -1,7 +1,14 @@
 package com.codeup.blog.models;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.persistence.*;
 import java.util.List;
+
 
 @Entity
 @Table(name="users")
@@ -20,15 +27,18 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "followers",
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "followed_id")}
     )
+//    @JsonSerialize(using = FollowingListSerializer.class)
+    @JsonIgnore
     private List<User> followingList;
 
     @ManyToMany(mappedBy = "followingList")
+    @JsonIgnore
     private List<User> followerList;
 
     public User (){

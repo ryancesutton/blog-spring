@@ -6,10 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,13 +22,13 @@ public class UserController {
     }
 
     @GetMapping("/sign-up")
-    public String showSignupForm(Model model){
+    public String showSignupForm(Model model) {
         model.addAttribute("user", new User());
         return "users/sign-up";
     }
 
     @PostMapping("/sign-up")
-    public String saveUser(@ModelAttribute User user){
+    public String saveUser(@ModelAttribute User user) {
         String hash = passwordEncoder.encode(user.getPassword());
         user.setPassword(hash);
         users.save(user);
@@ -39,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/profile/{id}")
-    public String viewOtherUserProfile(@PathVariable long id, Model model){
+    public String viewOtherUserProfile(@PathVariable long id, Model model) {
         User profileUser = users.getOne(id);
         model.addAttribute("user", profileUser);
         List<User> followingList = profileUser.getFollowingList();
@@ -49,8 +46,8 @@ public class UserController {
         return "users/profile";
     }
 
-    @PostMapping("users/follow/{id}") // put this action on the follow button
-    public String followUser(@PathVariable long id){
+    @PostMapping("/users/follow/{id}") // put this action on the follow button
+    public String followUser(@PathVariable long id) {
         //get current user:
         User principle = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User currentUser = users.getOne(principle.getId());
@@ -69,4 +66,16 @@ public class UserController {
 
 
     }
+
+    @GetMapping(value = "/gallery.json")
+    public @ResponseBody
+    List<User> getFollowingListInJson() {
+        User principle = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User currentUser = users.getOne(principle.getId());
+        return currentUser.getFollowingList();
+
+
+    }
+
+
 }
